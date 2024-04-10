@@ -9,6 +9,7 @@
 #include <libnetfilter_queue/libnetfilter_queue.h>
 
 #include <regex.h>
+#include <string.h>
 
 #define TCP 6
 
@@ -23,11 +24,22 @@ int find_HarmWeb(const char* data_buf, const char* harm_web){
     regex_t regex;
     int reti;
 
-    reti = regcomp(&regex, harm_web, 0);
+    char* host_name = (char*)malloc(strlen("Host: ") + strlen(harm_web) + 1);
 
+    if (host_name == NULL) {
+        fprintf(stderr, "Memory allocation failed during HOST declaration\n");
+        return -1;
+    }
+
+    strcpy(host_name, "Host: ");
+    strcat(host_name, harm_web);
+    printf("[ host name ]\n%s\n", host_name);
+
+    reti = regcomp(&regex, host_name, 0);
     reti = regexec(&regex, data_buf, 0, NULL, 0);
     if (!reti){
         regfree(&regex);
+        free(host_name);
         return 1;
     }
 }
@@ -35,7 +47,6 @@ int find_HarmWeb(const char* data_buf, const char* harm_web){
 int dump(unsigned char* buf, int size, const char* harm_web) {
     int protocol = buf[9];
     // printf("protocol: %d\n", protocol);
-
 
     if (protocol == TCP){
         int ip_len = (buf[0]&0x0f)*4;
