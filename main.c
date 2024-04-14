@@ -28,6 +28,7 @@ int find_HarmWeb(const char* data_buf, const char* harm_web){
 
     if (host_name == NULL) {
         fprintf(stderr, "Memory allocation failed during HOST declaration\n");
+        regfree(&regex);
         return -1;
     }
 
@@ -43,6 +44,7 @@ int find_HarmWeb(const char* data_buf, const char* harm_web){
         return 1;
     }
 
+    regfree(&regex);
     return 0;
 }
 
