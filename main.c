@@ -42,6 +42,8 @@ int find_HarmWeb(const char* data_buf, const char* harm_web){
         free(host_name);
         return 1;
     }
+
+    return 0;
 }
 
 int dump(unsigned char* buf, int size, const char* harm_web) {
